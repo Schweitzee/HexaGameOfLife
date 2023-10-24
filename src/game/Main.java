@@ -11,7 +11,9 @@ public class Main extends JFrame{
         JFrame frame = new JFrame("HexaGame of life");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(WIDTH, HEIGHT);
-
+        frame.setBackground(Color.BLACK);
+        Image icon = Toolkit.getDefaultToolkit().getImage("hexa_icon.png");
+        frame.setIconImage(icon);
         //frame.add(new MenuPanel());
         frame.add(new GamePanel(8, 12));
         frame.setVisible(true);

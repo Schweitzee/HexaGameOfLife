@@ -40,10 +40,10 @@ public class Hex {
         if (Boolean.TRUE.equals(this.state)){
             g2d.setColor(Color.WHITE);
         }else {
-            g2d.setColor(Color.BLACK);
+            g2d.setColor(Color.PINK);
         }
         g2d.fill(hexagon);
-        g2d.setColor(Color.GRAY);
+        g2d.setColor(Color.WHITE);
         g2d.draw(hexagon);
     }
 

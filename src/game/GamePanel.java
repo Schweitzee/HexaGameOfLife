@@ -26,6 +26,7 @@ public class GamePanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        super.setBackground(Color.BLACK);
         table.draw(g);
     }
 }
