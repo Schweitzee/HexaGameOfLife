@@ -63,15 +63,15 @@ public class HexMatrix {
         }
     }
 
-    private int getSurroundings(int i, int j) {
+    private int getSurroundings(int row, int col) {
         int surroundings = 0;
 
-        if(Boolean.TRUE.equals(hexes[i - 1 % he][j].getState())){surroundings++;}           // above
-        if(Boolean.TRUE.equals(hexes[i - 1 % he][j - 1 % wi].getState())){surroundings++;}  // upper left
-        if(Boolean.TRUE.equals(hexes[i - 1 % he][j + 1 % wi].getState())){surroundings++;}  // upper right
-        if(Boolean.TRUE.equals(hexes[i][j - 1 % wi].getState())){surroundings++;}           // lower right
-        if(Boolean.TRUE.equals(hexes[i][j - 1 % wi].getState())){surroundings++;}           // lower left
-        if(Boolean.TRUE.equals(hexes[i +1 % he][j].getState())){surroundings++;}            // under
+        if(Boolean.TRUE.equals(hexes[row - 1 % he][col].getState())){surroundings++;}           // above
+        if(Boolean.TRUE.equals(hexes[row][col - 1 % wi].getState())){surroundings++;}  // upper left
+        if(Boolean.TRUE.equals(hexes[row][col + 1 % wi].getState())){surroundings++;}  // upper right
+        if(Boolean.TRUE.equals(hexes[row - 1 % he][col - 1 % wi].getState())){surroundings++;}           // lower left
+        if(Boolean.TRUE.equals(hexes[row - 1 % he][col + 1 % wi].getState())){surroundings++;}           // lower right
+        if(Boolean.TRUE.equals(hexes[row + 1 % he][col].getState())){surroundings++;}            // under
         return surroundings;
     }
 
