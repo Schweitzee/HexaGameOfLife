@@ -9,6 +9,9 @@ public class Hex {
     private final int[] yList = new int[6];
 
     public Hex(){}
+    public Hex(Boolean st){
+        state = st;
+    }
 
     public void initialSet(int x, int y, int size){
 
@@ -27,10 +30,8 @@ public class Hex {
         yList[5] = y;
     }
 
-    //  public int[] getX_s(){return xList;}
-    //  public int[] getyList() {return yList;}
 
-    public void draw(Graphics g) {
+    public void paintComponent(Graphics g) {
         Polygon hexagon = new Polygon();
         hexagon.npoints = 6;
         hexagon.xpoints = xList;

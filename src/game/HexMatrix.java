@@ -12,9 +12,12 @@ public class HexMatrix {
     Set<Integer> born;
     Set<Integer> alive;
 
-    public HexMatrix(int height, int width, int hexSize) { // , Set<Integer> bornNum, Set<Integer> aliveNum
+    public HexMatrix(int height, int width, int hexSize, Set<Integer> bo, Set<Integer> al) { // , Set<Integer> bornNum, Set<Integer> aliveNum
         he = height; wi = width;
         this.hexes = new Hex[he][wi];
+        born = bo;
+        alive = al;
+
         int startX = hexSize + 10;
         int startY = 10 + (int)(hexSize * 0.5 * 1.75);
 
@@ -28,16 +31,35 @@ public class HexMatrix {
                 }
             }
         }
+    }
+    public HexMatrix(int height, int width, int hexSize, Hex[][] hexmatrix, Set<Integer> bo, Set<Integer> al) { // , Set<Integer> bornNum, Set<Integer> aliveNum
+        he = height; wi = width;
+        this.hexes = hexmatrix;
+        born = bo;
+        alive = al;
+
+        int startX = hexSize + 10;
+        int startY = 10 + (int)(hexSize * 0.5 * 1.75);
+
+        for(int y = 0; y < he;y++){
+            for(int x = 0; x < wi; x++){;
+                if((x % 2) == 0){
+                    hexes[y][x].initialSet((int)(hexSize * x * 1.5 + startX),(int)(hexSize * 1.75 * y + startY), hexSize );
+                } else{
+                    hexes[y][x].initialSet((int)(hexSize * x * 1.5 + startX),(int)(hexSize * 1.75 * y + startY + hexSize * 0.5 * 1.75),hexSize);
+                }
+            }
+        }
 
         //born = bornNum;
         //alive = aliveNum;
 
     }
 
-    public void draw(Graphics g){
+    protected void paintComponent(Graphics g) {
         for (Hex[] row: hexes) {
             for (Hex hex: row) {
-                hex.draw(g);
+                hex.paintComponent(g);
             }
         }
     }
