@@ -1,6 +1,8 @@
 package game;
 
 import java.awt.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Set;
 
 public class HexMatrix {
@@ -9,14 +11,22 @@ public class HexMatrix {
     int wi;
     int he;
 
-    Set<Integer> born;
-    Set<Integer> alive;
+    HashSet<Integer> born = new HashSet<>();
+    HashSet<Integer> alive = new HashSet<>();
 
-    public HexMatrix(int height, int width, int hexSize, Set<Integer> bo, Set<Integer> al) { // , Set<Integer> bornNum, Set<Integer> aliveNum
+    /**
+     * Constructor based on only parameters of the new simulation, no starting data for the of the Hexes
+     * @param height height of the simulation matrix
+     * @param width width of the simulation matrix
+     * @param hexSize size of the hexes in pixels, read documentation to see which size
+     * @param bo Set storing Integers, these numbers make a Hex born
+     * @param al Set storing Integers, these numbers keep a Hex alive
+     */
+    public HexMatrix(int height, int width, int hexSize, Set<Integer> bo, Set<Integer> al) {
         he = height; wi = width;
         this.hexes = new Hex[he][wi];
-        born = bo;
-        alive = al;
+        born.addAll(bo);
+        alive.addAll(al);
 
         int startX = hexSize + 10;
         int startY = 10 + (int)(hexSize * 0.5 * 1.75);
@@ -32,11 +42,21 @@ public class HexMatrix {
             }
         }
     }
-    public HexMatrix(int height, int width, int hexSize, Hex[][] hexmatrix, Set<Integer> bo, Set<Integer> al) { // , Set<Integer> bornNum, Set<Integer> aliveNum
+
+    /**
+     * Constructor based on input from a file, Hexes in hexMatrix can have differing states
+     * @param height height of the simulation matrix
+     * @param width width of the simulation matrix
+     * @param hexSize size of the hexes in pixels, read documentation to see which size
+     * @param hexMatrix initialized array of Hexes, with states alive or dead
+     * @param bo Set storing Integers, these numbers make a Hex born
+     * @param al Set storing Integers, these numbers keep a Hex alive
+     */
+    public HexMatrix(int height, int width, int hexSize, Hex[][] hexMatrix, Set<Integer> bo, Set<Integer> al) {
         he = height; wi = width;
-        this.hexes = hexmatrix;
-        born = bo;
-        alive = al;
+        this.hexes = hexMatrix;
+        born.addAll(bo);
+        alive.addAll(al);
 
         int startX = hexSize + 10;
         int startY = 10 + (int)(hexSize * 0.5 * 1.75);
@@ -50,10 +70,6 @@ public class HexMatrix {
                 }
             }
         }
-
-        //born = bornNum;
-        //alive = aliveNum;
-
     }
 
     protected void paintComponent(Graphics g) {
@@ -63,7 +79,6 @@ public class HexMatrix {
             }
         }
     }
-
 
     public void refresh() {
         for(int i = 0; i < he; i++){
