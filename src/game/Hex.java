@@ -2,7 +2,7 @@ package game;
 
 import java.awt.*;
 
-public class Hex {
+public class Hex{
     private Boolean state = false;
     private Boolean newState = false;
     private final int[] xList = new int[6];
@@ -31,24 +31,25 @@ public class Hex {
     }
 
 
-    public void paintComponent(Graphics g) {
+    public void draw(Graphics g) {
         Polygon hexagon = new Polygon();
         hexagon.npoints = 6;
         hexagon.xpoints = xList;
         hexagon.ypoints = yList;
 
         Graphics2D g2d = (Graphics2D) g;
-        if (Boolean.TRUE.equals(this.state)){
-            g2d.setColor(Color.WHITE);
-        }else {
-            g2d.setColor(Color.PINK);
-        }
-        g2d.fill(hexagon);
-        g2d.setColor(Color.WHITE);
+        g2d.setColor(Color.YELLOW);
         g2d.draw(hexagon);
+        if (Boolean.TRUE.equals(this.state)){
+            g2d.setColor(Color.PINK);
+            g2d.fill(hexagon);
+        }else {
+            g2d.setColor(Color.BLACK);
+            g2d.fill(hexagon);
+        }
     }
 
-    public void update() { state = newState; }
+    public void switchState() { state = newState; }
     public Boolean getState(){
         return state;
     }

@@ -12,7 +12,6 @@ import SpringUtilities.SpringUtilities;
 
 public class MainFrame extends JFrame {
     private static final JPanel menuPanel = new JPanel(new GridLayout(1,2));
-    private static final JPanel gamePanel = new JPanel();
     private static JTextField born;
     private static JTextField surv;
     private static JTextField tableWidth;
@@ -22,9 +21,6 @@ public class MainFrame extends JFrame {
 
     public MainFrame(){
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-
-        this.add(gamePanel);
-        gamePanel.setVisible(false);
 
         JPanel topLeft = new JPanel(new SpringLayout());
 
@@ -74,17 +70,19 @@ public class MainFrame extends JFrame {
         }
         @Override
         public void actionPerformed(ActionEvent e) {
-            GamePanel gp = new GamePanel(Integer.parseInt(tableHeight.getText()),Integer.parseInt(tableWidth.getText()),Integer.parseInt(hexSize.getText()),makeIntSet(born.getText()),makeIntSet(surv.getText()));
-            menuPanel.setVisible(false);
-            gamePanel.add(gp);
-            gp.setVisible(true);
-            gamePanel.setVisible(true);
-
-            /*SIMULATION    */
-
-            gp.setVisible(false);
-            gamePanel.setVisible(false);
-            menuPanel.setVisible(true);
+            int hexsize = Integer.parseInt(hexSize.getText());
+            int height = Integer.parseInt(tableHeight.getText());
+            int width = Integer.parseInt(tableWidth.getText());
+            frame.setVisible(false);
+            GameFrame gf = new GameFrame(height,width,hexsize,makeIntSet(born.getText()),makeIntSet(surv.getText()));
+            gf.setTitle("HexaGame of life");
+            Image icon = Toolkit.getDefaultToolkit().getImage("hexa_icon.png");
+            gf.setIconImage(icon);
+            try {
+                 gf.playGame(frame);
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
@@ -102,20 +100,18 @@ public class MainFrame extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                GamePanel gp = new GamePanel(FileHandlerUtil.loadHexMatrix((String)(sGames.getSelectedItem())));
+                GameFrame gp = new GameFrame(FileHandlerUtil.loadHexMatrix((String)(sGames.getSelectedItem())));
                 menuPanel.setVisible(false);
-                gamePanel.add(gp);
-                gp.setVisible(true);
-                gamePanel.setVisible(true);
+
 
                 /*SIMULATION    */
 
                 gp.setVisible(false);
-                gamePanel.setVisible(false);
+
                 menuPanel.setVisible(true);
             } catch (FileNotFoundException | FileHandlerUtil.FormatException ex) {
                 System.out.println("Couldn't load game from \"" + sGames.getSelectedItem() + "\" because format is wrong.");
-                gamePanel.setVisible(false);
+
                 menuPanel.setVisible(true);
             }
         }
