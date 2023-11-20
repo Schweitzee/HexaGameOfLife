@@ -5,9 +5,10 @@ public class UpdateThread extends Thread{
 
         private final HexMatrix table;
 
-        private int sleeptime;// = 200;
+        private int sleeptime;
 
         private Boolean go = true;
+
 
         public UpdateThread(HexMatrix matrix, int sleeptime){
             table = matrix;
@@ -16,21 +17,22 @@ public class UpdateThread extends Thread{
 
         public void setSleeptime(int time){sleeptime = time;}
 
-        public void pause(){
+        public void end(){
             go = false;
         }
 
 
-        @Override
-        public void run() {
-            while(go){
-                try {
-                    table.refresh();
-                    sleep(sleeptime);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+
+    @Override
+    public void run() {
+        while(Boolean.TRUE.equals(go)){
+            try {
+                table.refresh();
+                sleep(sleeptime);
+            } catch (InterruptedException e) {
+               throw new RuntimeException(e);
             }
         }
     }
+}
 

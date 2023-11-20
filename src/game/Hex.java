@@ -1,6 +1,7 @@
 package game;
 
 import java.awt.*;
+import java.io.Serializable;
 
 public class Hex{
     private Boolean state = false;
@@ -49,7 +50,7 @@ public class Hex{
         }
     }
 
-    public void switchState() { state = newState; }
+    public void switchStateToNewState() { state = newState; }
     public Boolean getState(){
         return state;
     }

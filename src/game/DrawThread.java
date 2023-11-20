@@ -4,7 +4,7 @@ public class DrawThread extends Thread{
 
     private final HexMatrix table;
 
-    private int sleeptime;// = 200;
+    private int sleeptime;
 
     private Boolean go = true;
 
@@ -16,14 +16,16 @@ public class DrawThread extends Thread{
 
     public void setSleeptime(int time){sleeptime = time;}
 
-    public void pause(){
+
+
+    public void end(){
         go = false;
     }
 
 
     @Override
     public void run() {
-        while(go){
+        while(Boolean.TRUE.equals(go)){
             try {
                 table.syncedPaint();
                 sleep(sleeptime);
