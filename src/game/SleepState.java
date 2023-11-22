@@ -1,6 +1,32 @@
 package game;
 
+/**
+ * SleepStates are used to determine how fast the game should run.
+ */
 public enum SleepState{
-    NORMAL, FAST, FASTER, FASTEST, SLOW, SLOWEST;
-    //500, 350, 200, 100, 750, 1000
+
+    /**
+     * Normal speed represents 500 milliseconds between updates
+     */
+    NORMAL,
+    /**
+     * Fast speed represents 350 milliseconds between updates
+     */
+    FAST,
+    /**
+     * Faster speed represents 200 milliseconds between updates
+     */
+    FASTER,
+    /**
+     * Fastest speed represents 100 milliseconds between updates
+     */
+    FASTEST,
+    /**
+     * Slow speed represents 750 milliseconds between updates
+     */
+    SLOW,
+    /**
+     * Slowest speed represents 1000 milliseconds between updates
+     */
+    SLOWEST
 }

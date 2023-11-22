@@ -10,9 +10,19 @@ import java.nio.file.*;
 //
 //
 
-// This class is used to save and load HexMatrix objects to and from files.
+/**
+ * Utility class for saving and loading HexMatrix objects to and from files.
+ */
 public class FileHandlerUtil {
 
+
+    /**
+     * Saves a HexMatrix object to a file.
+     *
+     * @param hexmatrix The HexMatrix object to save.
+     * @param filename  The name of the file to save to.
+     * @throws IOException If there is an error saving the file.
+     */
     public static void saveHexMatrix(HexMatrix hexmatrix, String filename) throws IOException {
         // Specify the directory where the files should be saved
         String saveDirectory = "SavedGames/";
@@ -41,8 +51,20 @@ public class FileHandlerUtil {
         }
     }
 
-    private FileHandlerUtil(){}
+    /**
+     * Private constructor to prevent instantiation.
+     */
+    private FileHandlerUtil(){} // Prevent instantiation
 
+
+    /**
+     * Loads a HexMatrix object from a file.
+     *
+     * @param filename The name of the file to load from.
+     * @return The loaded HexMatrix object.
+     * @throws IOException            If there is an error loading the file.
+     * @throws ClassNotFoundException If the file does not contain a valid HexMatrix object.
+     */
     public static HexMatrix loadHexMatrix(String filename) throws IOException, ClassNotFoundException {
         // Specify the directory where the files are saved
         String saveDirectory = "SavedGames/";

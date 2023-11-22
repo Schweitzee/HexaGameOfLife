@@ -6,25 +6,92 @@ import java.io.*;
 import java.util.Set;
 import java.util.TreeSet;
 
+
+/**
+ * Class representing the matrix of Hexes, it is a JPanel, so it can be drawn on the screen
+ * It is also Serializable, so it can be saved and loaded
+ * It is synchronized, so it can be used in multithreading for the simulation and drawing.
+ * The threads are also synchronized by the paused Boolean, which is set to true when the simulation is paused.
+ */
 public class HexMatrix extends JPanel implements Serializable {
+
+    /**
+     * hexes is the matrix of Hexes.
+     */
     private Hex[][] hexes;
+
+    /**
+     * Returns the matrix of Hexes.
+     */
     private int wi;
+    /**
+     * wi is the width of the matrix.
+     * @return width of the matrix as an Integer
+     */
     public int getWi(){return wi;}
+
+    /**
+     * he is the height of the matrix.
+     */
     private int he;
+
+    /**
+     * @return height of the matrix as an Integer
+     */
     public int getHe() {return he;}
+
+    /**
+     * hexSize is the size of the hexagons.
+     */
     private int hexSize;
+
+    /**
+     * @return size of the Hexes in pixels
+     */
     public int getHexSize() {return hexSize;}
+
+    /**
+     * bornSet is the set of numbers, which make a Hex born.
+     */
     TreeSet<Integer> bornSet = new TreeSet<>();
+
+    /**
+     * aliveSet is the set of numbers, which keep a Hex alive.
+     */
     TreeSet<Integer> aliveSet = new TreeSet<>();
+
+    /**
+     * drawable is a Boolean, which is set to true when the simulation is ready to be drawn and set to false when the simulation is being calculated.
+     */
     private Boolean drawable = true;
+
+    /**
+     * Sets the drawable Boolean to true.
+     */
     public void setDrawableTrue() {drawable = true;}
+
+    /**
+     * paused is a Boolean, which is set to true when the simulation is paused.
+     * By default it is set to true, so the simulation doesn't start immediately.
+     */
     private Boolean paused = true;
+
+    /**
+     * @param paused Boolean to be set
+     */
     public void setPaused(Boolean paused) {
         this.paused = paused;
     }
+
+    /**
+     * @return paused Boolean
+     */
     public Boolean getPaused() {
         return paused;
     }
+    /**
+     *Notifies all threads, which are waiting on the HexMatrix object.
+     */
     public synchronized void noti(){this.notifyAll();}
 
 
@@ -58,7 +125,10 @@ public class HexMatrix extends JPanel implements Serializable {
         }
     }
 
-
+    /**
+     * Waits for the simulation to be ready to be drawn and then draws it.
+     * @throws InterruptedException when the thread is interrupted
+     */
     protected synchronized void syncedPaint() throws InterruptedException {
 
         while(Boolean.TRUE.equals(paused)){
@@ -75,6 +145,10 @@ public class HexMatrix extends JPanel implements Serializable {
         this.notifyAll();
     }
 
+    /**
+     * Calls the draw method of every Hex in the matrix.
+     * @param g the <code>Graphics</code> object to protect
+     */
     @Override
     public void paintComponent(Graphics g){
         super.repaint();
@@ -88,7 +162,11 @@ public class HexMatrix extends JPanel implements Serializable {
     }
 
 
-
+    /**
+     * Calls the getSurroundings method for every Hex in the matrix and based on the result sets the new state of the Hex.
+     * Synced with the drawing method, so it can't be called while the drawing method is running.
+     * @throws InterruptedException when the thread is interrupted
+     */
     public synchronized void refresh() throws InterruptedException {
 
         while(Boolean.TRUE.equals(paused)){
@@ -118,6 +196,12 @@ public class HexMatrix extends JPanel implements Serializable {
         this.notifyAll();
     }
 
+    /**
+     * Returns the number of neighbours of a Hex.
+     * @param row row of the Hex
+     * @param col column of the Hex
+     * @return number of neighbours of the Hex
+     */
     public int getSurroundings(int row, int col) {
         int surroundings = 0;
 
@@ -140,6 +224,9 @@ public class HexMatrix extends JPanel implements Serializable {
         return surroundings;
     }
 
+    /**
+     * @return the set of numbers, which make a Hex born as an Integer.
+     */
     public int getBornSet(){
         int res = 0;
         for (int i:bornSet) {
@@ -149,6 +236,9 @@ public class HexMatrix extends JPanel implements Serializable {
         return res;
     }
 
+    /**
+     * @return the set of numbers, which keep a Hex alive as an Integer.
+     */
     public int getAliveSet(){
         int res = 0;
         for (int i:aliveSet) {
@@ -158,10 +248,19 @@ public class HexMatrix extends JPanel implements Serializable {
         return res;
     }
 
+    /**
+     * @return the matrix of Hexes.
+     */
     public Hex[][] getHexes() {
         return hexes;
     }
 
+    /**
+     * DeSerializes the HexMatrix object.
+     * @param in the input stream
+                 * @throws IOException when the stream is corrupted
+                 * @throws ClassNotFoundException when the class of the object is not found
+     */
     @Serial
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         wi = (int) in.readObject();
@@ -187,6 +286,13 @@ public class HexMatrix extends JPanel implements Serializable {
         drawable = true;
         paused = true;
     }
+
+
+    /**
+     * Serializes the HexMatrix object to the output stream.
+     * @param out the output stream
+     *            @throws IOException when the stream is corrupted
+     */
     @Serial
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.writeObject(wi);
@@ -199,9 +305,5 @@ public class HexMatrix extends JPanel implements Serializable {
                 out.writeObject(hex.getState());
             }
         }
-
     }
-
-
-
 }

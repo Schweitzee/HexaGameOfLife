@@ -3,7 +3,15 @@ package game;
 import java.util.Set;
 import java.util.TreeSet;
 
+
+/**
+ * This class contains basic utility methods
+ */
+
 public class BasicUtil {
+    /**
+     * Private constructor to prevent instantiation
+     */
     private BasicUtil() {}
 
     /**
