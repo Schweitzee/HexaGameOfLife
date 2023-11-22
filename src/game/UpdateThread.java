@@ -2,7 +2,6 @@ package game;
 
 public class UpdateThread extends Thread{
 
-
         private final HexMatrix table;
 
         private int sleeptime;

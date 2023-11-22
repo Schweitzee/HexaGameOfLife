@@ -1,13 +1,14 @@
 package game;
 
 import java.awt.*;
-import java.io.Serializable;
+import java.io.IOException;
+import java.io.*;
 
-public class Hex{
+public class Hex implements Serializable{
     private Boolean state = false;
-    private Boolean newState = false;
-    private final int[] xList = new int[6];
-    private final int[] yList = new int[6];
+    private transient Boolean newState = false;
+    private final transient int[] xList = new int[6];
+    private final transient int[] yList = new int[6];
 
     public Hex(){}
     public Hex(Boolean st){
@@ -65,5 +66,14 @@ public class Hex{
         hexagon.ypoints = yList;
         return hexagon.contains(x,y);
 
+    }
+
+    @Serial
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        state = in.readBoolean();
+    }
+    @Serial
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.writeBoolean(state);
     }
 }

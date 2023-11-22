@@ -77,7 +77,7 @@ public class GameFrame extends JFrame {
                         table.repaint();
                     }
                     break;
-                case (10): //enter
+                case ('\n'): //enter
                     if(Boolean.TRUE.equals(table.getPaused())) {
                         LocalDateTime currentDateTime = LocalDateTime.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS);
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
@@ -88,8 +88,7 @@ public class GameFrame extends JFrame {
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
-                        MainFrame.setsGames();
-                        escaper();
+                        MainFrame.getsGames().addItem(formattedDateTime + "_" + table.getBornSet() + "-" + table.getAliveSet());
                     }
                         break;
                 default:
@@ -100,8 +99,13 @@ public class GameFrame extends JFrame {
         }
 
         private void escaper() {
+            if(Boolean.TRUE.equals(table.getPaused())){
+                table.setPaused(false);
+                table.noti();
+            }
             updater.end();
             drawer.end();
+
             try {
                 updater.join();
                 drawer.join();
@@ -109,6 +113,7 @@ public class GameFrame extends JFrame {
                 throw new RuntimeException(ex);
             }
             frame.dispose();
+            menufr.repaint();
             menufr.setVisible(true);
         }
 

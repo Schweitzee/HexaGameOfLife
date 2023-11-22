@@ -1,12 +1,8 @@
 package game;
 
 import java.io.*;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Set;
-import java.util.Scanner;
+import java.nio.file.*;
+
 
 // height,width,hexSize,bornNum,surviveNum
 //1,0,1,0,.....
@@ -14,108 +10,62 @@ import java.util.Scanner;
 //
 //
 
+// This class is used to save and load HexMatrix objects to and from files.
 public class FileHandlerUtil {
 
     public static void saveHexMatrix(HexMatrix hexmatrix, String filename) throws IOException {
-        String directoryPath = "SavedGames/";
-        createDirectoryIfNotExists(directoryPath);
-        String fullPath = directoryPath + filename;
-        try {
-            createFileIfNotExists(fullPath);
-            makeFileWritable(fullPath);
-            try (BufferedWriter fw = new BufferedWriter(new FileWriter(fullPath))) {
-                fw.write(hexmatrix.getHe() + "," + hexmatrix.getWi() + "," + hexmatrix.getHexSize() + "," + hexmatrix.getBornSet() + "," + hexmatrix.getAliveSet() + '\n');
-                for (Hex[] hexRow:hexmatrix.getHexes()) {
-                    for (Hex hex:hexRow) {
-                        fw.write(Boolean.TRUE.equals(hex.getState())?"1," : "0,");
-                    }
-                    fw.write('\n');
-                }
-            }
+        // Specify the directory where the files should be saved
+        String saveDirectory = "SavedGames/";
 
-            System.out.println("HexMatrix saved successfully to: " + fullPath);
+        // Create the full path including the directory
+        Path filePath = FileSystems.getDefault().getPath(saveDirectory, filename);
 
+        // Check if the file already exists
+        if (Files.exists(filePath)) {
+            throw new FileAlreadyExistsException("File already exists: " + filename);
+        }
+
+        // Create the parent directories if they don't exist
+        if (!Files.exists(filePath.getParent())) {
+            Files.createDirectories(filePath.getParent());
+        }
+
+        try (FileOutputStream fileOutputStream = new FileOutputStream(filePath.toFile());
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
+
+            objectOutputStream.writeObject(hexmatrix);
+            System.out.println("HexMatrix saved successfully to " + filePath);
         } catch (IOException e) {
-            System.err.println("Error while saving HexMatrix: " + e.getMessage());
+            System.err.println("Error saving HexMatrix to " + filePath);
+            throw e;
         }
     }
 
     private FileHandlerUtil(){}
-    private static void createDirectoryIfNotExists(String directoryPath) throws IOException {
-        Path directory = Paths.get(directoryPath);
 
-        if (!Files.exists(directory)) {
-            Files.createDirectories(directory);
-        }
-    }
-    private static void createFileIfNotExists(String filePath) throws IOException {
-        Path file = Paths.get(filePath);
+    public static HexMatrix loadHexMatrix(String filename) throws IOException, ClassNotFoundException {
+        // Specify the directory where the files are saved
+        String saveDirectory = "SavedGames/";
 
-        try {
-            Files.createFile(file);
-        } catch (FileAlreadyExistsException e) {
-            // File already exists, no need to create it again
-        }
-    }
-    private static void makeFileWritable(String filePath) throws IOException {
-        File file = new File(filePath);
+        // Create the full path including the directory
+        Path filePath = FileSystems.getDefault().getPath(saveDirectory, filename);
 
-        if (!file.setWritable(true)) {
-            throw new IOException("Failed to make the file writable.");
-        }
-    }
+        try (FileInputStream fileInputStream = new FileInputStream(filePath.toFile());
+             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
 
-    public static class FormatException extends Exception{
-        public FormatException() {}
-    }
+            Object loadedObject = objectInputStream.readObject();
 
-    public static <sc> HexMatrix loadHexMatrix(String name) throws FileNotFoundException, FormatException {
-        File f = new File("SavedGames/" + name);
-        int height, width, hexSize;
-        Set<Integer> bornNum;
-        Set<Integer> surviveNum;
-        Hex[][] hexArray;
-        Scanner sc = null;
-        try{
-            sc = new Scanner(f);
-            String[] firstLine = sc.nextLine().split(",");
-            height = Integer.parseInt(firstLine[0]);
-            width = Integer.parseInt(firstLine[1]);
-            hexSize = Integer.parseInt(firstLine[2]);
-            bornNum = MainFrame.makeIntSet(firstLine[3]);
-            surviveNum = MainFrame.makeIntSet(firstLine[4]);
-
-            hexArray = new Hex[height][width];
-
-            for (int line = 0; line < height; line++) {
-
-                if (!sc.hasNext()) {
-                    throw new FormatException();
-                }
-                String[] nextLine = sc.nextLine().split(",");
-
-                if (nextLine.length != width) {
-                    throw new FormatException();
-                }
-
-                for (int column = 0; column < width; column++) {
-                    hexArray[line][column] = new Hex(numToBool(nextLine[column]));
-                }
+            if (loadedObject instanceof HexMatrix) {
+                System.out.println("HexMatrix loaded successfully from " + filePath);
+                return (HexMatrix) loadedObject;
+            } else {
+                throw new IOException("File does not contain a valid HexMatrix");
             }
-
-        } catch (Exception e) {
-            throw new FileNotFoundException();
-        } finally {
-            assert sc != null;
-            sc.close();
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Error loading HexMatrix from " + filePath);
+            throw e;
         }
-
-        return new HexMatrix(height, width, hexSize, hexArray, bornNum, surviveNum);
-    }
-
-    private static boolean numToBool(String str) throws FormatException {
-        if(Integer.parseInt(str) == 0){return false;}
-        if(Integer.parseInt(str) == 1){return true;}
-        else throw new FormatException();
     }
 }
+
+

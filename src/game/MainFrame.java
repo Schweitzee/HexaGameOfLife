@@ -5,8 +5,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.util.HashSet;
-import java.util.Set;
 
 import SpringUtilities.SpringUtilities;
 
@@ -17,10 +15,8 @@ public class MainFrame extends JFrame {
     private static final JTextField tableWidth = new JTextField(7);
     private static final JTextField tableHeight = new JTextField(7);
     private static final JTextField hexSize = new JTextField(7);
-    private static JComboBox<String> sGames = new JComboBox<>(savedGames());
-    public static void setsGames(){
-        sGames = new JComboBox<>(savedGames());
-    }
+    private static final JComboBox<String> sGames = new JComboBox<>(savedGames());
+    public static JComboBox<String> getsGames(){return sGames;}
 
     public MainFrame(){
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -71,7 +67,7 @@ public class MainFrame extends JFrame {
             int height = Integer.parseInt(tableHeight.getText());
             int width = Integer.parseInt(tableWidth.getText());
             frame.setVisible(false);
-            GameFrame gf = new GameFrame(height,width,hexsize,makeIntSet(born.getText()),makeIntSet(surv.getText()));
+            GameFrame gf = new GameFrame(height,width,hexsize,BasicUtil.makeIntSet(born.getText()),BasicUtil.makeIntSet(surv.getText()));
             gf.setTitle("HexaGame of life");
             Image icon = Toolkit.getDefaultToolkit().getImage("hexa_icon.png");
             gf.setIconImage(icon);
@@ -79,43 +75,36 @@ public class MainFrame extends JFrame {
         }
     }
 
+
     public static class LoadGameListener implements ActionListener {
 
         JFrame frame;
 
-        public LoadGameListener(JFrame fr){
+        public LoadGameListener(JFrame fr) {
             frame = fr;
         }
-
         @Override
         public void actionPerformed(ActionEvent e) {
             GameFrame gf;
             frame.setVisible(false);
             try {
-                gf = new GameFrame(FileHandlerUtil.loadHexMatrix((String)(sGames.getSelectedItem())));
+                gf = new GameFrame(FileHandlerUtil.loadHexMatrix((String) (sGames.getSelectedItem())));
                 gf.setTitle("HexaGame of life");
                 Image icon = Toolkit.getDefaultToolkit().getImage("hexa_icon.png");
                 gf.setIconImage(icon);
-            } catch (FileNotFoundException | FileHandlerUtil.FormatException ex) {
+            } catch (FileNotFoundException ex) {
                 System.out.println("Couldn't load game from \"" + sGames.getSelectedItem() + "\" because format is wrong.");
                 frame.setVisible(true);
+                throw new RuntimeException(ex);
+            } catch (IOException | ClassNotFoundException ex) {
                 throw new RuntimeException(ex);
             }
             gf.playGame(frame);
         }
     }
 
-    public static String[] savedGames(){
+    public static String[] savedGames() {
         File games = new File("SavedGames/");
         return games.list();
     }
-    public static Set<Integer> makeIntSet(String str){
-        HashSet<Integer> intSet = new HashSet<>();
-        char[] charSet = str.toCharArray();
-        for(char c : charSet) {
-            intSet.add(Integer.parseInt(Character.toString(c)));
-        }
-        return intSet;
-    }
-
 }

@@ -2,16 +2,17 @@ package game;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class HexMatrix extends JPanel{
-    private final transient Hex[][] hexes;
-    private final int wi;
+public class HexMatrix extends JPanel implements Serializable {
+    private Hex[][] hexes;
+    private int wi;
     public int getWi(){return wi;}
-    private final int he;
+    private int he;
     public int getHe() {return he;}
-    private final int hexSize;
+    private int hexSize;
     public int getHexSize() {return hexSize;}
     TreeSet<Integer> bornSet = new TreeSet<>();
     TreeSet<Integer> aliveSet = new TreeSet<>();
@@ -57,35 +58,6 @@ public class HexMatrix extends JPanel{
         }
     }
 
-    /**
-     * Constructor based on input from a file, Hexes in hexMatrix can have differing states
-     * @param height height of the simulation matrix
-     * @param width width of the simulation matrix
-     * @param hexSize size of the hexes in pixels, read documentation to see which size
-     * @param hexMatrix initialized array of Hexes, with states alive or dead
-     * @param bo Set storing Integers, these numbers make a Hex born
-     * @param al Set storing Integers, these numbers keep a Hex alive
-     */
-    public HexMatrix(int height, int width, int hexSize, Hex[][] hexMatrix, Set<Integer> bo, Set<Integer> al) {
-        he = height; wi = width;
-        this.hexSize = hexSize;
-        this.hexes = hexMatrix;
-        bornSet.addAll(bo);
-        aliveSet.addAll(al);
-
-        int startX = hexSize;
-        int startY = hexSize;
-
-        for(int y = 0; y < he;y++){
-            for(int x = 0; x < wi; x++){
-                if((x % 2) == 0){
-                    hexes[y][x].initialSet((int)(hexSize * x * 1.5 + startX),(int)(hexSize * 1.75 * y + startY), hexSize );
-                } else{
-                    hexes[y][x].initialSet((int)(hexSize * x * 1.5 + startX),(int)(hexSize * 1.75 * y + startY + hexSize * 0.5 * 1.75),hexSize);
-                }
-            }
-        }
-    }
 
     protected synchronized void syncedPaint() throws InterruptedException {
 
@@ -126,6 +98,7 @@ public class HexMatrix extends JPanel{
         while(Boolean.TRUE.equals(drawable)){
             this.wait();
         }
+
         for(int i = 0; i < he; i++){
             for(int j = 0; j < wi; j++){
                 int surroundings = getSurroundings(i, j);
@@ -145,7 +118,7 @@ public class HexMatrix extends JPanel{
         this.notifyAll();
     }
 
-    private int getSurroundings(int row, int col) {
+    public int getSurroundings(int row, int col) {
         int surroundings = 0;
 
         if(Boolean.TRUE.equals(hexes[Math.floorMod(row-1, he)][col].getState())){surroundings++;}           // above
@@ -188,5 +161,47 @@ public class HexMatrix extends JPanel{
     public Hex[][] getHexes() {
         return hexes;
     }
+
+    @Serial
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        wi = (int) in.readObject();
+        he = (int) in.readObject();
+        hexSize = (int) in.readObject();
+        bornSet = (TreeSet<Integer>) (in.readObject());
+        aliveSet = (TreeSet<Integer>) (in.readObject());
+        hexes = new Hex[he][wi];
+
+        int startX = hexSize;
+        int startY =  (int)(hexSize * 0.9);
+
+        for (int y = 0; y < he; y++) {
+            for (int x = 0; x < wi; x++) {
+                hexes[y][x] = new Hex((Boolean) in.readObject());
+                if((x % 2) == 0){
+                    hexes[y][x].initialSet((int)(hexSize * x * 1.5 + startX),(int)(hexSize * 1.75 * y + startY), hexSize );
+                } else{
+                    hexes[y][x].initialSet((int)(hexSize * x * 1.5 + startX),(int)(hexSize * 1.75 * y + startY + hexSize * 0.5 * 1.75),hexSize);
+                }
+            }
+        }
+        drawable = true;
+        paused = true;
+    }
+    @Serial
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.writeObject(wi);
+        out.writeObject(he);
+        out.writeObject(hexSize);
+        out.writeObject(bornSet);
+        out.writeObject(aliveSet);
+        for (Hex[] hexRow:hexes) {
+            for (Hex hex:hexRow) {
+                out.writeObject(hex.getState());
+            }
+        }
+
+    }
+
+
 
 }
