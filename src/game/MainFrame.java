@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.io.*;
 
 import SpringUtilities.SpringUtilities;
+import org.jetbrains.annotations.NotNull;
 
 
 /**
@@ -20,17 +21,6 @@ public class MainFrame extends JFrame {
      * menuPanel is the panel that contains the different components of the menu.
      */
     private static final JPanel menuPanel = new JPanel();
-
-    private static final JMenuBar mBar = new JMenuBar();
-
-    private static final JMenu menu = new JMenu("Menu");
-
-    private static final JRadioButtonMenuItem newGame = new JRadioButtonMenuItem("New Game");
-    private static final JRadioButtonMenuItem loadGame = new JRadioButtonMenuItem("Load Game");
-
-    private static final ButtonGroup group = new ButtonGroup();
-
-    private static final JMenuItem exit = new JMenuItem("Exit");
 
     /**
      * born is the text field where the user can enter the numbers of neighbours that make a dead cell become alive.
@@ -79,33 +69,7 @@ public class MainFrame extends JFrame {
         JPanel left = new JPanel(new SpringLayout());
         JPanel right = new JPanel(new FlowLayout());
 
-
-        newGame.addActionListener(e -> {
-            left.setVisible(true);
-            right.setVisible(false);
-            this.setSize(300,250);
-        });
-        loadGame.addActionListener(e -> {
-            left.setVisible(false);
-            right.setVisible(true);
-            this.setSize(700,100);
-        });
-
-        exit.addActionListener(e -> System.exit(0));
-
-        menu.add(newGame);
-        menu.add(loadGame);
-
-        group.add(newGame);
-        group.add(loadGame);
-
-        menu.addSeparator();
-
-        menu.add(exit);
-
-        mBar.add(menu);
-
-        mBar.setVisible(true);
+        JMenuBar mBar = getjMenuBar(left, right);
 
         this.setJMenuBar(mBar);
 
@@ -141,6 +105,52 @@ public class MainFrame extends JFrame {
         right.setVisible(false);
         this.setLocationRelativeTo(null);
         this.add(menuPanel);
+    }
+
+    /**
+     * getjMenuBar creates the menu bar and adds the different components to it.
+     * @param left the panel that contains the components of the left part of the menu.
+     * @param right the panel that contains the components of the right part of the menu.
+     * @return the menu bar.
+     */
+    @NotNull
+    private JMenuBar getjMenuBar(JPanel left, JPanel right) {
+        JMenuBar mBar = new JMenuBar();
+        JMenu menu = new JMenu("Menu");
+
+        ButtonGroup group = new ButtonGroup();
+
+        JRadioButtonMenuItem newGame = new JRadioButtonMenuItem("New Game");
+        JRadioButtonMenuItem loadGame = new JRadioButtonMenuItem("Load Game");
+        JMenuItem exit = new JMenuItem("Exit");
+
+        newGame.addActionListener(e -> {
+            left.setVisible(true);
+            right.setVisible(false);
+            this.setSize(300,250);
+        });
+        loadGame.addActionListener(e -> {
+            left.setVisible(false);
+            right.setVisible(true);
+            this.setSize(700,100);
+        });
+
+        exit.addActionListener(e -> System.exit(0));
+
+        menu.add(newGame);
+        menu.add(loadGame);
+
+        group.add(newGame);
+        group.add(loadGame);
+
+        menu.addSeparator();
+
+        menu.add(exit);
+
+        mBar.add(menu);
+
+        mBar.setVisible(true);
+        return mBar;
     }
 
     /**
