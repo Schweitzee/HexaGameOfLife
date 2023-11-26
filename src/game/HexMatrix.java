@@ -123,6 +123,7 @@ public class HexMatrix extends JPanel implements Serializable {
                 }
             }
         }
+        this.setSize((int)(hexSize * 1.5 * wi + startX * 2),(int)(hexSize * 1.75 * he + startY * 2));
     }
 
     /**

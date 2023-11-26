@@ -19,7 +19,18 @@ public class MainFrame extends JFrame {
     /**
      * menuPanel is the panel that contains the different components of the menu.
      */
-    private static final JPanel menuPanel = new JPanel(new GridLayout(1,2));
+    private static final JPanel menuPanel = new JPanel();
+
+    private static final JMenuBar mBar = new JMenuBar();
+
+    private static final JMenu menu = new JMenu("Menu");
+
+    private static final JRadioButtonMenuItem newGame = new JRadioButtonMenuItem("New Game");
+    private static final JRadioButtonMenuItem loadGame = new JRadioButtonMenuItem("Load Game");
+
+    private static final ButtonGroup group = new ButtonGroup();
+
+    private static final JMenuItem exit = new JMenuItem("Exit");
 
     /**
      * born is the text field where the user can enter the numbers of neighbours that make a dead cell become alive.
@@ -65,37 +76,69 @@ public class MainFrame extends JFrame {
     public MainFrame(){
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        JPanel topLeft = new JPanel(new SpringLayout());
+        JPanel left = new JPanel(new SpringLayout());
+        JPanel right = new JPanel(new FlowLayout());
+
+
+        newGame.addActionListener(e -> {
+            left.setVisible(true);
+            right.setVisible(false);
+            this.setSize(300,250);
+        });
+        loadGame.addActionListener(e -> {
+            left.setVisible(false);
+            right.setVisible(true);
+            this.setSize(700,100);
+        });
+
+        exit.addActionListener(e -> System.exit(0));
+
+        menu.add(newGame);
+        menu.add(loadGame);
+
+        group.add(newGame);
+        group.add(loadGame);
+
+        menu.addSeparator();
+
+        menu.add(exit);
+
+        mBar.add(menu);
+
+        mBar.setVisible(true);
+
+        this.setJMenuBar(mBar);
+
 
         JButton startNewGame = new JButton("Start nem game!");
         startNewGame.addActionListener(new NewGameListener(this));
 
-        topLeft.add(new JLabel("Born: "), SpringLayout.EAST);
-        topLeft.add(born, SpringLayout.WEST);
-        topLeft.add(new JLabel("Survive: "), SpringLayout.EAST);
-        topLeft.add(surv, SpringLayout.WEST);
-        topLeft.add(new JLabel("Table width: "), SpringLayout.EAST);
-        topLeft.add(tableWidth, SpringLayout.WEST);
-        topLeft.add(new JLabel("Table height: "), SpringLayout.EAST);
-        topLeft.add(tableHeight, SpringLayout.WEST);
-        topLeft.add(new JLabel("Size of hexagon (in pixel): "), SpringLayout.EAST);
-        topLeft.add(hexSize, SpringLayout.WEST);
-        topLeft.add(startNewGame, SpringLayout.WEST);
-        topLeft.add(new JLabel(""),SpringLayout.EAST);
-        SpringUtilities.makeCompactGrid(topLeft,6,2,6,6,6,6);
+        left.add(new JLabel("Born: "), SpringLayout.EAST);
+        left.add(born, SpringLayout.WEST);
+        left.add(new JLabel("Survive: "), SpringLayout.EAST);
+        left.add(surv, SpringLayout.WEST);
+        left.add(new JLabel("Table width: "), SpringLayout.EAST);
+        left.add(tableWidth, SpringLayout.WEST);
+        left.add(new JLabel("Table height: "), SpringLayout.EAST);
+        left.add(tableHeight, SpringLayout.WEST);
+        left.add(new JLabel("Size of hexagon (in pixel): "), SpringLayout.EAST);
+        left.add(hexSize, SpringLayout.WEST);
+        left.add(startNewGame, SpringLayout.WEST);
+        left.add(new JLabel(""),SpringLayout.EAST);
+        SpringUtilities.makeCompactGrid(left,6,2,6,6,6,6);
 
-        JPanel topRight = new JPanel(new FlowLayout());
         JButton loadGameButton = new JButton("Load selected game!");
         loadGameButton.addActionListener(new LoadGameListener(this));
 
 
-        topRight.add(new JLabel("Choose a saved game in the box to load it"));
-        topRight.add(sGames);
-        topRight.add(loadGameButton);
+        right.add(new JLabel("Choose a saved game in the box to load it"));
+        right.add(sGames);
+        right.add(loadGameButton);
 
 
-        menuPanel.add(topLeft);
-        menuPanel.add(topRight);
+        menuPanel.add(left);
+        menuPanel.add(right);
+        right.setVisible(false);
         this.setLocationRelativeTo(null);
         this.add(menuPanel);
     }

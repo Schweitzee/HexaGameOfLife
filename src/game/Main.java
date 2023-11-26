@@ -10,7 +10,7 @@ public class Main{
         Image icon = Toolkit.getDefaultToolkit().getImage("hexa_icon.png");
         frame.setIconImage(icon);
 
-        frame.setSize(700,200);
+        frame.setSize(300,250);
         frame.setVisible(true);
     }
 }

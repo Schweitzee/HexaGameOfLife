@@ -55,12 +55,13 @@ public class GameFrame extends JFrame {
      * @param alive The set of numbers of neighbours that a living cell needs to stay alive.
      */
     public GameFrame(int height, int width, int hexSize, Set<Integer> born, Set<Integer> alive){
-        this.setSize((int)(width*1.7*hexSize), (int)(height*hexSize*2.1));
+        this.setSize((int)(width*1.6*hexSize), (int)(height*hexSize*2));
         table = new HexMatrix(height,width, hexSize, born, alive);
         this.addWindowListener(new WindowAdapter());
+
         this.hexSize = hexSize;
         this.add(table);
-        table.setSize(this.getSize());
+
         table.setLayout(null);
         this.setVisible(true);
     }
@@ -72,12 +73,12 @@ public class GameFrame extends JFrame {
      */
     public GameFrame(HexMatrix matrix){
         this.hexSize = matrix.getHexSize();
-        this.setSize((int)(matrix.getWi()*1.7*hexSize), (int)(matrix.getHe()*hexSize*2.1));
+        this.setSize((int)(matrix.getWi()*1.6*hexSize), (int)(matrix.getHe()*hexSize*2));
+
         this.addWindowListener(new WindowAdapter());
         table = matrix;
         this.add(table);
 
-        table.setSize(this.getSize());
         table.setLayout(null);
         this.setVisible(true);
     }
